@@ -4,25 +4,7 @@ node_modules
 
 
 
-async function run(){
-    try{
-        app.get('/courses', async(req, res)=> {
-            const database = client.db('photographyCourse').collection('courseDetails');
-            const query = {};
-            const cursor = database.find(query)
-            const courses = await cursor.limit(3).toArray();
-            const count = await  database.estimatedDocumentCount() 
-            res.send({count,courses})
-        })
- 
 
-    }
-    finally{
-        console.log("Best Of Luck, Keep Going");
-    }
-
-}
-run().catch(err=> console.log(err))
 
 app.get('/', (req, res) => {
     res.send(`The Server Is Online`)
