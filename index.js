@@ -41,3 +41,8 @@ run().catch(err=> console.log(err))
 app.get('/', (req, res) => {
     res.send(`The Server Is Online`)
 })
+
+app.listen(port, () => {
+    console.log(
+        `Server Running On Port ${port}`);
+})
