@@ -16,14 +16,25 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 async function run(){
     try{
-        app.get('/courses', async(req, res)=> {
+        //Get Limited Data
+        app.get('/limitServices', async(req, res)=> {
+            const database = client.db('photographyService').collection('servicesDetails');
+            const query = {};
+            const cursor = database.find(query)
+            const services = await cursor.limit(3).toArray();
+            const count = await  database.estimatedDocumentCount() 
+            res.send({count,services})
+        });
+        // Get All Data 
+
+        app.get('/services', async(req, res)=> {
             const database = client.db('photographyCourse').collection('courseDetails');
             const query = {};
             const cursor = database.find(query)
-            const courses = await cursor.limit(3).toArray();
+            const services = await cursor.toArray();
             const count = await  database.estimatedDocumentCount() 
-            res.send({count,courses})
-        })
+            res.send({count,services})
+        });
  
 
     }
