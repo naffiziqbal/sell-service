@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config()
@@ -14,36 +14,47 @@ const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@clu
 console.log(uri);
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
-async function run(){
-    try{
+async function run() {
+    try {
         //Get Limited Data
-        app.get('/limitServices', async(req, res)=> {
+        app.get('/limitServices', async (req, res) => {
             const database = client.db('photographyService').collection('servicesDetails');
             const query = {};
             const cursor = database.find(query)
             const services = await cursor.limit(3).toArray();
-            const count = await  database.estimatedDocumentCount() 
-            res.send({count,services})
+            const count = await database.estimatedDocumentCount()
+            res.send({ count, services })
         });
         // Get All Data 
 
-        app.get('/services', async(req, res)=> {
+        app.get('/services', async (req, res) => {
             const database = client.db('photographyCourse').collection('courseDetails');
             const query = {};
             const cursor = database.find(query)
             const services = await cursor.toArray();
-            const count = await  database.estimatedDocumentCount() 
-            res.send({count,services})
+            const count = await database.estimatedDocumentCount()
+            res.send({ count, services })
         });
- 
+
+        // Get Data Using ID 
+        app.get('/services/:id', async (req, res) => {
+            const database = client.db('photographyService').collection('servicesDetails');
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const service = await database.findOne(query);
+            console.log(service);
+            
+            res.send(service)
+        })
+
 
     }
-    finally{
+    finally {
         console.log("Best Of Luck, Keep Going");
     }
 
 }
-run().catch(err=> console.log(err))
+run().catch(err => console.log(err))
 
 
 
