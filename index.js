@@ -17,7 +17,9 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
     try {
         const database = client.db('photographyService').collection('servicesDetails');
-        const reviewCollection = client.db('photographyService').collection('reviews')
+        const reviewCollection = client.db('photographyService').collection('reviews');
+
+        const postCollection = client.db('photographyService').collection("userPost");
         //Get Limited Data
         app.get('/limitServices', async (req, res) => {
 
@@ -55,12 +57,34 @@ async function run() {
             res.send(review)
         })
 
+        // Get Private Review Only For Logged In User 
+        app.get('/userreviews', async (req, res) => {
+            let query = {};
+            if (req.query?.email) {
+                query = {
+                    email: req.query.email
+                }
+            }
+            console.log(query);
+
+            const cursor = reviewCollection.find(query)
+            const review = await cursor.toArray();
+            res.send(review)
+        })
+
         // POST REVIEW 
         app.post('/services', async (req, res) => {
             const review = req.body;
             const result = await reviewCollection.insertOne(review);
             console.log(result)
             res.send(result)
+        })
+
+        // Post Sevice 
+        app.post('/userservice', async (req, res) => {
+            const userPost = req.body;
+            const userPosts = await  database.insertOne(userPost);
+            res.send(userPosts)
         })
 
 
