@@ -87,6 +87,27 @@ async function run() {
             res.send(userPosts)
         })
 
+        //  Update A Review 
+        app.patch('/userservices/:id', async(req, res)=>{
+            const id = req.params.id;
+            const updateData = req.body.updateData;
+            const query = {_id :ObjectId(id)};
+            const updateDoc = {
+                $set : {
+                    updateData : updateData
+                }
+            }
+            const result = await reviewCollection.updateOne(updateDoc, result);
+            res.send(result)
+        });
+
+        app.delete('/userreviews/:id', async(req, res)=> {
+            const id = req.params.id;
+            const query = {_id : ObjectId(id)}
+            const result = await reviewCollection.deleteOne(query);
+            res.send(result)
+        })
+
 
     }
     finally {
