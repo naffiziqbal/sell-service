@@ -16,9 +16,11 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 async function run() {
     try {
+        const database = client.db('photographyService').collection('servicesDetails');
+        const reviewCollection = client.db('photographyService').collection('reviews')
         //Get Limited Data
         app.get('/limitServices', async (req, res) => {
-            const database = client.db('photographyService').collection('servicesDetails');
+
             const query = {};
             const cursor = database.find(query)
             const services = await cursor.limit(3).toArray();
@@ -26,9 +28,8 @@ async function run() {
             res.send({ count, services })
         });
         // Get All Data 
-
         app.get('/services', async (req, res) => {
-            const database = client.db('photographyCourse').collection('courseDetails');
+
             const query = {};
             const cursor = database.find(query)
             const services = await cursor.toArray();
@@ -38,13 +39,28 @@ async function run() {
 
         // Get Data Using ID 
         app.get('/services/:id', async (req, res) => {
-            const database = client.db('photographyService').collection('servicesDetails');
+
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
-            const service = await database.findOne(query);
-            console.log(service);
-            
-            res.send(service)
+            const services = await database.findOne(query);
+            console.log(services);
+            res.send(services)
+        })
+
+        // Get Review 
+        app.get('/reviews', async (req, res) => {
+            const query = {}
+            const cursor = reviewCollection.find(query);
+            const review = await cursor.toArray();
+            res.send(review)
+        })
+
+        // POST REVIEW 
+        app.post('/services', async (req, res) => {
+            const review = req.body;
+            const result = await reviewCollection.insertOne(review);
+            console.log(result)
+            res.send(result)
         })
 
 
