@@ -52,7 +52,8 @@ async function run() {
         // Get Review 
         app.get('/reviews', async (req, res) => {
             const query = {}
-            const cursor = reviewCollection.find(query);
+            const cursor = reviewCollection.find(query).sort({time: -1})
+
             const review = await cursor.toArray();
             res.send(review)
         })
@@ -60,7 +61,7 @@ async function run() {
         app.get('/userreview/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
-            const cursor = reviewCollection.find(query);
+            const cursor = reviewCollection.find(query).sort({time: -1})
             const singleReview = await cursor.toArray();
             console.log(singleReview);
             res.send(singleReview)
