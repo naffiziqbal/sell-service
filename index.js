@@ -56,6 +56,15 @@ async function run() {
             const review = await cursor.toArray();
             res.send(review)
         })
+        //Get Review Using ID
+        app.get('/userreview/:id', async(req, res)=>{
+            const id = req.params.id;
+            const query = {_id : ObjectId(id)};
+            const cursor = reviewCollection.find(query);
+            const singleReview = await cursor.toArray();
+            console.log(singleReview);
+            res.send(singleReview)
+        })
 
         // Get Private Review Only For Logged In User 
         app.get('/userreviews', async (req, res) => {
@@ -129,3 +138,5 @@ app.listen(port, () => {
     console.log(
         `Server Running On Port ${port}`);
 })
+
+module.exports = app;
