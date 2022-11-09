@@ -57,9 +57,9 @@ async function run() {
             res.send(review)
         })
         //Get Review Using ID
-        app.get('/userreview/:id', async(req, res)=>{
+        app.get('/userreview/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id : ObjectId(id)};
+            const query = { _id: ObjectId(id) };
             const cursor = reviewCollection.find(query);
             const singleReview = await cursor.toArray();
             console.log(singleReview);
@@ -68,15 +68,23 @@ async function run() {
 
         // Get Private Review Only For Logged In User 
         app.get('/userreviews', async (req, res) => {
+  
+            
             let query = {};
             if (req.query?.email) {
                 query = {
                     email: req.query.email
                 }
+             
             }
+            let time = {}
+            // if(req?.query?.time){
+            //     time : req.query.time
+            //     console.log(time, 'time ')
+            // }
             console.log(query);
 
-            const cursor = reviewCollection.find(query)
+            const cursor = reviewCollection.find(query).sort({time: -1})
             const review = await cursor.toArray();
             res.send(review)
         })
@@ -92,29 +100,33 @@ async function run() {
         // Post Sevice 
         app.post('/userservice', async (req, res) => {
             const userPost = req.body;
-            const userPosts = await  database.insertOne(userPost);
+            const userPosts = await database.insertOne(userPost);
             res.send(userPosts)
         })
 
         //  Update A Review 
-        app.patch('/userservices/:id', async(req, res)=>{
+        app.patch('/userservices/:id', async (req, res) => {
             const id = req.params.id;
             const updateData = req.body.updateData;
-            const query = {_id :ObjectId(id)};
+            const query = { _id: ObjectId(id) };
             const updateDoc = {
-                $set : {
-                    updateData : updateData
+                $set: {
+                    updateData: updateData
                 }
             }
             const result = await reviewCollection.updateOne(updateDoc, result);
             res.send(result)
         });
-
-        app.delete('/userreviews/:id', async(req, res)=> {
+        //Delete Review
+        app.delete('/userreviews/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id : ObjectId(id)}
+            const query = { _id: ObjectId(id) }
             const result = await reviewCollection.deleteOne(query);
             res.send(result)
+        })
+        //Delete  Service 
+        app.delete('/services', async(req, res)=>{
+
         })
 
 
