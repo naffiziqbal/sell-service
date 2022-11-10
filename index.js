@@ -52,7 +52,7 @@ async function run() {
         // Get Review 
         app.get('/reviews', async (req, res) => {
             const query = {}
-            const cursor = reviewCollection.find(query).sort({time: -1})
+            const cursor = reviewCollection.find(query).sort({ time: -1 })
 
             const review = await cursor.toArray();
             res.send(review)
@@ -60,32 +60,37 @@ async function run() {
         //Get Review Using ID
         app.get('/userreview/:id', async (req, res) => {
             const id = req.params.id;
+            console.log(id);
             const query = { _id: ObjectId(id) };
-            const cursor = reviewCollection.find(query).sort({time: -1})
+            const cursor = reviewCollection.find(query).sort({ time: -1 })
             const singleReview = await cursor.toArray();
             console.log(singleReview);
             res.send(singleReview)
         })
+        //Get Review For Specific Service 
+        app.get('/servicereview/:service', async (req, res) => {
+            const id = req.params.service;
+            console.log(id);
+            
+            const query = { service: id };
+            const cursor = reviewCollection.find(query).sort({ time: -1 })
+            const result = await cursor.toArray();
+            res.send(result)
+            console.log(result);
 
+        })
         // Get Private Review Only For Logged In User 
         app.get('/userreviews', async (req, res) => {
-  
-            
             let query = {};
             if (req.query?.email) {
                 query = {
                     email: req.query.email
                 }
-             
+
             }
-            let time = {}
-            // if(req?.query?.time){
-            //     time : req.query.time
-            //     console.log(time, 'time ')
-            // }
             console.log(query);
 
-            const cursor = reviewCollection.find(query).sort({time: -1})
+            const cursor = reviewCollection.find(query).sort({ time: -1 })
             const review = await cursor.toArray();
             res.send(review)
         })
@@ -126,7 +131,7 @@ async function run() {
             res.send(result)
         })
         //Delete  Service 
-        app.delete('/services', async(req, res)=>{
+        app.delete('/services', async (req, res) => {
 
         })
 
